@@ -33,10 +33,103 @@
       .lato-font {
         font-family: "Lato", sans-serif;
       }
+      .primary-color {
+        background-color: #0e7a81;
+      }
     </style>
   </head>
   <body class="lato-font">
-    <h1>Welcome</h1>
+    <!-- Header section start here -->
+    <header class="w-10/12 mx-auto">
+      <!-- Nav section -->
+      <nav>
+        <div class="navbar bg-base-100 my-9">
+          <div class="navbar-start">
+            <div class="dropdown">
+              <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h8m-8 6h16"
+                  />
+                </svg>
+              </div>
+              <ul
+                tabindex="-1"
+                class="menu menu-sm dropdown-content bg-base-100 text-gray-500 font-semibold rounded-box z-1 mt-3 w-52 p-2 shadow"
+              >
+                <li><a>Home</a></li>
+
+                <li><a>Shop</a></li>
+                <li><a>Contact</a></li>
+              </ul>
+            </div>
+            <a class="btn btn-ghost text-3xl font-bold">
+              <img src="./images/logo.webp" alt="Peddy" />Peddy
+            </a>
+          </div>
+          <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1 text-gray-500 font-semibold">
+              <li><a>Home</a></li>
+
+              <li><a>Shop</a></li>
+              <li><a>Contact</a></li>
+            </ul>
+          </div>
+          <div class="navbar-end">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn btn-ghost btn-circle avatar"
+            >
+              <div class="w-10 rounded-full">
+                <img
+                  alt="Profile"
+                  src="https://img.icons8.com/?size=100&id=7820&format=png"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero section -->
+      <header>
+        <div class="hero">
+          <div class="hero-content text-center">
+            <div class="">
+              <div class="w-full xl:max-w-6/8 mx-auto">
+                <h2 class="font-bold text-gray-500 text-xl mb-10">
+                  Bringing Families Together ❤️‍🔥
+                </h2>
+                <h1 class="text-7xl font-extrabold">
+                  Your Path to Adoption Starts Here
+                </h1>
+                <p class="py-6 text-[#131313]">
+                  It is a long established fact that a reader will be distracted
+                  by the readable content of a page when looking at its layout.
+                  The point of using Lorem Ipsum is that it has a.
+                </p>
+                <button class="btn primary-color text-white">View More</button>
+              </div>
+              <img
+                class="object-contain my-12 mx-auto"
+                src="./images/pet.webp"
+                alt="hero-pet"
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+    </header>
     <!-- Script -->
     <script src="./script/pat.js"></script>
   </body>
