@@ -162,7 +162,7 @@
 
       <section>
         <!-- Best Deal for you section -->
-        <div class="flex justify-between">
+        <div onclick="petsCategoryDetails()" class="flex justify-between">
           <h1 class="text-2xl font-bold">Best Deal For you</h1>
           <button class="btn primary-color text-white font-bold">
             Sort by Price
@@ -179,6 +179,9 @@
 
         <!-- Image features -->
       </section>
+      <div id="spinner" class="flex justify-center items-center py-10">
+        <span class="loading loading-bars loading-xl"></span>
+      </div>
     </main>
 
     <!-- Footer section start -->

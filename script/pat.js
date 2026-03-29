@@ -24,7 +24,76 @@ const categoryBtn = (animalData) => {
           </button>
          
     `;
+    const btn = div.querySelector("button");
+    btn.addEventListener("click", () => patsCategoryDetails(pat.category));
     categoryBTN.append(div);
+  });
+};
+
+// Pets category
+const patsCategoryDetails = async (pat) => {
+  const url = await fetch(
+    `https://openapi.programming-hero.com/api/peddy/category/${pat}`,
+  );
+  const data = await url.json();
+  console.log(data);
+
+  const petCardsDetails = document.getElementById("petCards");
+  const spinner = document.getElementById("spinner");
+
+  // show spinner, clear old cards
+  spinner.classList.remove("hidden");
+  petCardsDetails.innerHTML = "";
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  
+  data.data?.forEach((e) => {
+    spinner.classList.add("hidden");
+    const div = document.createElement("div");
+    div.innerHTML = `
+    
+            <div class="card bg-base-100 shadow-sm">
+              <figure class="px-4 pt-4">
+                <img
+                  src="${e.image}"
+                  alt="Shoes"
+                  class="h-full w-full object-cover rounded-xl"
+                />
+              </figure>
+              <div class="card-body p-4">
+                <h2 class="card-title">${e.pet_name}</h2>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-qrcode"></i> Breed: ${e.breed}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-regular fa-calendar"></i> Birth: ${e.date_of_birth}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-mercury"></i> Gender: ${e.gender}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-dollar-sign"></i> Price : € ${e.price}
+                </p>
+                <hr class="border-gray-300" />
+                <div class="card-actions mx-auto">
+                  <button class="btn   md:btn-md btn-outline  border-gray-200 text-gray-400">
+                    <i class="fa-regular fa-thumbs-up"></i>
+                  </button>
+                  <button
+                    class="btn  md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
+                  >
+                    Adopt
+                  </button>
+                  <button
+                    class="btn   md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
+                  >
+                    Details
+                  </button>
+                </div>
+              </div>
+            </div>
+            `;
+    petCardsDetails.append(div);
   });
 };
 
@@ -49,9 +118,15 @@ const petsData = async () => {
 //     "vaccinated_status": "Fully",
 //     "pet_name": "Sunny"
 // }
-const petDetails = (data) => {
+const petDetails = async (data) => {
   const petCardsDetails = document.getElementById("petCards");
+  const spinner = document.getElementById("spinner");
+
+  // show spinner, clear old cards
+  spinner.classList.remove("hidden");
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   data.forEach((e) => {
+    spinner.classList.add("hidden");
     const div = document.createElement("div");
     div.innerHTML = `
             <div class="card bg-base-100 shadow-sm">
@@ -96,7 +171,6 @@ const petDetails = (data) => {
             </div>
             `;
     petCardsDetails.append(div);
-    console.log(e);
   });
 };
 category();
