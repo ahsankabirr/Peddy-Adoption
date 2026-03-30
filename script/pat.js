@@ -14,10 +14,11 @@ async function category() {
 // }
 const categoryBtn = (animalData) => {
   const categoryBTN = document.getElementById("category-btn");
+
   animalData.forEach((pat) => {
     const div = document.createElement("div");
     div.innerHTML = `
-          <button class="btn px-8 lg:py-10 lg:px-20 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">
+          <button id="btn-${pat.category}" class="category-btn btn px-8 lg:py-10 lg:px-20 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">
           <img class="w-4 lg:w-10" src=${pat.category_icon} alt="">
           
             ${pat.category}
@@ -30,27 +31,55 @@ const categoryBtn = (animalData) => {
   });
 };
 
+const removeActiveClass = () => {
+  const button = document.getElementsByClassName("category-btn");
+  for (let btn of button) {
+    btn.classList.remove("rounded-full");
+  }
+};
+
 // Pets category
 const patsCategoryDetails = async (pat) => {
+  removeActiveClass();
   const url = await fetch(
     `https://openapi.programming-hero.com/api/peddy/category/${pat}`,
   );
   const data = await url.json();
-  console.log(data);
 
   const petCardsDetails = document.getElementById("petCards");
   const spinner = document.getElementById("spinner");
 
   // show spinner, clear old cards
   spinner.classList.remove("hidden");
+  const petBtn = document.getElementById(`btn-${pat}`);
+
+  petBtn.classList.add("rounded-full");
+
   petCardsDetails.innerHTML = "";
   await new Promise((resolve) => setTimeout(resolve, 2000));
+  const noDataFound = document.getElementById("noData");
+  noDataFound.innerHTML = "";
 
-  
-  data.data?.forEach((e) => {
-    spinner.classList.add("hidden");
-    const div = document.createElement("div");
-    div.innerHTML = `
+  data.data.length === 0
+    ? (spinner.classList.add("hidden"),
+      (noDataFound.innerHTML = `
+    <div class="text-center">
+          <div class="flex justify-center">
+            <img src="./images/error.webp" alt="" />
+          </div>
+          <h1 class="font-extrabold text-2xl">No Information Available</h1>
+          <p class="mx-16 text-xl">
+            It is a long established fact that a reader will be distracted by
+            the readable content of a page when looking at its layout. The point
+            of using Lorem Ipsum is that it has a.
+          </p>
+        </div>`))
+    : data.data?.forEach((e) => {
+        console.log(e);
+
+        spinner.classList.add("hidden");
+        const div = document.createElement("div");
+        div.innerHTML = `
     
             <div class="card bg-base-100 shadow-sm">
               <figure class="px-4 pt-4">
@@ -76,7 +105,7 @@ const patsCategoryDetails = async (pat) => {
                 </p>
                 <hr class="border-gray-300" />
                 <div class="card-actions mx-auto">
-                  <button class="btn   md:btn-md btn-outline  border-gray-200 text-gray-400">
+                  <button onclick="myFunction(${e.petId})" class="btn    md:btn-md btn-outline  border-gray-200 text-gray-400">
                     <i class="fa-regular fa-thumbs-up"></i>
                   </button>
                   <button
@@ -93,8 +122,8 @@ const patsCategoryDetails = async (pat) => {
               </div>
             </div>
             `;
-    petCardsDetails.append(div);
-  });
+        petCardsDetails.append(div);
+      });
 };
 
 // Pets details
@@ -121,14 +150,12 @@ const petsData = async () => {
 const petDetails = async (data) => {
   const petCardsDetails = document.getElementById("petCards");
   const spinner = document.getElementById("spinner");
-
-  // show spinner, clear old cards
-  spinner.classList.remove("hidden");
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   data.forEach((e) => {
-    spinner.classList.add("hidden");
     const div = document.createElement("div");
+
+    spinner.classList.add("hidden");
     div.innerHTML = `
+    
             <div class="card bg-base-100 shadow-sm">
               <figure class="px-4 pt-4">
                 <img
@@ -153,7 +180,7 @@ const petDetails = async (data) => {
                 </p>
                 <hr class="border-gray-300" />
                 <div class="card-actions mx-auto">
-                  <button class="btn   md:btn-md btn-outline  border-gray-200 text-gray-400">
+                  <button onclick="myFunction(${e.petId})" class="btn   md:btn-md btn-outline  border-gray-200 text-gray-400">
                     <i class="fa-regular fa-thumbs-up"></i>
                   </button>
                   <button
@@ -170,8 +197,24 @@ const petDetails = async (data) => {
               </div>
             </div>
             `;
+
     petCardsDetails.append(div);
   });
 };
+// Like image section
+function myFunction(e) {
+  fetch(`https://openapi.programming-hero.com/api/peddy/pet/${e}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      const img = document.createElement("img");
+      img.src = `${data.petData?.image}`;
+      img.alt = "pets";
+      img.classList = "w-full object-cover rounded-xl";
+
+      const imgs = document.getElementById("pat-img");
+      imgs.append(img);
+    });
+}
 category();
 petsData();
