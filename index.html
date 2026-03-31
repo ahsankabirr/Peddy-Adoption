@@ -164,7 +164,10 @@
         <!-- Best Deal for you section -->
         <div onclick="petsCategoryDetails()" class="flex justify-between">
           <h1 class="text-2xl font-bold">Best Deal For you</h1>
-          <button class="btn primary-color text-white font-bold">
+          <button
+            onclick="sortByPrice()"
+            class="btn primary-color text-white font-bold"
+          >
             Sort by Price
           </button>
         </div>
@@ -200,6 +203,30 @@
         <div id="cardData" class="modal-box"></div>
       </dialog>
       <div id="noData" class="flex justify-center items-center py-10"></div>
+
+      <section>
+        <!-- CountDown -->
+        <dialog id="countdown_modal" class="modal">
+          <div class="modal-box text-center">
+            <img
+              class="mx-auto"
+              src="https://img.icons8.com/?size=96&id=q6BlPrJZmxHV&format=png"
+              alt="handshake"
+            />
+            <h1 class="font-extrabold text-4xl">Congrats</h1>
+            <p class="font-bold text-xl">
+              Adoption Process Started For Your Pet
+            </p>
+
+            <!-- countdown circle -->
+            <div
+              class="flex items-center justify-center w-20 h-20 rounded-full bg-primary mx-auto my-4"
+            >
+              <span class="text-4xl font-bold text-white" id="count">3</span>
+            </div>
+          </div>
+        </dialog>
+      </section>
     </main>
 
     <!-- Footer section start -->
@@ -217,12 +244,12 @@
             <h1 class="text-3xl font-bold">Peddy</h1>
           </div>
           <p class="text-base">
-            Location: av. Washington 165, NY <br />
-            CA 54003
+            Keizersgracht 482 1017 EG <br />
+            Amsterdam Netherlands
           </p>
           <p class="text-base">Phone: +31 85 964 47 25</p>
           <p class="text-base">Email: info@yourdomain.com</p>
-          <p class="text-base">Openings hours: 9.00 AM - 5.00 PM</p>
+          <p class="text-base">Openings: Mon – Fri: 9:00 AM – 5:00 PM</p>
           <div class="flex gap-4 mt-9">
             <img
               class="w-10 object-contain"

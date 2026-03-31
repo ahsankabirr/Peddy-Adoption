@@ -1,5 +1,6 @@
-// category fetch
+let currentPets = [];
 
+// Category fetch
 async function category() {
   const url = await fetch(
     `https://openapi.programming-hero.com/api/peddy/categories`,
@@ -7,23 +8,17 @@ async function category() {
   const categoryData = await url.json();
   categoryBtn(categoryData.categories);
 }
-// {
-//     "id": 1,
-//     "category": "Cat",
-//     "category_icon": "https://i.ibb.co.com/N7dM2K1/cat.png"
-// }
+
 const categoryBtn = (animalData) => {
   const categoryBTN = document.getElementById("category-btn");
 
   animalData.forEach((pat) => {
     const div = document.createElement("div");
     div.innerHTML = `
-          <button id="btn-${pat.category}" class="category-btn btn px-8 lg:py-10 lg:px-20 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">
-          <img class="w-4 lg:w-10" src=${pat.category_icon} alt="">
-          
-            ${pat.category}
-          </button>
-         
+      <button id="btn-${pat.category}" class="category-btn btn px-8 lg:py-10 lg:px-20 sm:btn-sm md:btn-md lg:btn-lg xl:btn-xl">
+        <img class="w-4 lg:w-10" src=${pat.category_icon} alt="">
+        ${pat.category}
+      </button>
     `;
     const btn = div.querySelector("button");
     btn.addEventListener("click", () => patsCategoryDetails(pat.category));
@@ -52,84 +47,41 @@ const patsCategoryDetails = async (pat) => {
   const petCardsDetails = document.getElementById("petCards");
   const spinner = document.getElementById("spinner");
 
-  // show spinner, clear old cards
   spinner.classList.remove("hidden");
   const petBtn = document.getElementById(`btn-${pat}`);
-
   petBtn.classList.add("rounded-full");
 
   petCardsDetails.innerHTML = "";
   await new Promise((resolve) => setTimeout(resolve, 2000));
+
   const noDataFound = document.getElementById("noData");
   noDataFound.innerHTML = "";
 
-  data.data.length === 0
-    ? (spinner.classList.add("hidden"),
-      (noDataFound.innerHTML = `
-    <div class="text-center">
-          <div class="flex justify-center">
-            <img src="./images/error.webp" alt="" />
-          </div>
-          <h1 class="font-extrabold text-2xl">No Information Available</h1>
-          <p class="mx-16 text-xl">
-            It is a long established fact that a reader will be distracted by
-            the readable content of a page when looking at its layout. The point
-            of using Lorem Ipsum is that it has a.
-          </p>
-        </div>`))
-    : data.data?.forEach((e) => {
-        console.log(e);
-
-        spinner.classList.add("hidden");
-        const div = document.createElement("div");
-        div.innerHTML = `
-    
-            <div class="card bg-base-100 shadow-sm">
-              <figure class="px-4 pt-4">
-                <img
-                  src="${e.image}"
-                  alt="Shoes"
-                  class="h-full w-full object-cover rounded-xl"
-                />
-              </figure>
-              <div class="card-body p-4">
-                <h2 class="card-title">${e.pet_name}</h2>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-qrcode"></i> Breed: ${e.breed}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-regular fa-calendar"></i> Birth: ${e.date_of_birth}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-mercury"></i> Gender: ${e.gender}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-dollar-sign"></i> Price : € ${e.price}
-                </p>
-                <hr class="border-gray-300" />
-                <div class="card-actions mx-auto">
-                  <button onclick="myFunction(${e.petId})" class="btn    md:btn-md btn-outline  border-gray-200 text-gray-400">
-                    <i class="fa-regular fa-thumbs-up"></i>
-                  </button>
-                  <button
-                    class="btn  md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
-                  >
-                    Adopt
-                  </button>
-                  <button onclick="modalFunction(${e.petId})"
-                    class="btn   md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
-                  >
-                    Details
-                  </button>
-                </div>
-              </div>
-            </div>
-            `;
-        petCardsDetails.append(div);
-      });
+  if (data.data.length === 0) {
+    spinner.classList.add("hidden");
+    noDataFound.innerHTML = `
+      <div class="text-center">
+        <div class="flex justify-center">
+          <img src="./images/error.webp" alt="" />
+        </div>
+        <h1 class="font-extrabold text-2xl">No Information Available</h1>
+        <p class="mx-16 text-xl">
+          It is a long established fact that a reader will be distracted by
+          the readable content of a page when looking at its layout.
+        </p>
+      </div>`;
+  } else {
+    currentPets = data.data ?? []; // save for sort
+    data.data.forEach((e) => {
+      spinner.classList.add("hidden");
+      const div = document.createElement("div");
+      div.innerHTML = buildCard(e);
+      petCardsDetails.append(div);
+    });
+  }
 };
 
-// Pets details
+// Pets details (on load)
 const petsData = async () => {
   const url = await fetch(
     "https://openapi.programming-hero.com/api/peddy/pets",
@@ -138,78 +90,71 @@ const petsData = async () => {
   petDetails(data.pets);
 };
 
-// {
-//     "petId": 1,
-//     "breed": "Golden Retriever",
-//     "category": "Dog",
-//     "date_of_birth": "2023-01-15",
-//     "price": 1200,
-//     "image": "https://i.ibb.co.com/p0w744T/pet-1.jpg",
-//     "gender": "Male",
-//     "pet_details": "This friendly male Golden Retriever is energetic and loyal, making him a perfect companion for families. Born on January 15, 2023, he enjoys playing outdoors and is especially great with children. Fully vaccinated, he's ready to join your family and bring endless joy. Priced at $1200, he offers love, loyalty, and a lively spirit for those seeking a playful yet gentle dog.",
-//     "vaccinated_status": "Fully",
-//     "pet_name": "Sunny"
-// }
 const petDetails = async (data) => {
+  currentPets = data; // save for sort
   const petCardsDetails = document.getElementById("petCards");
   const spinner = document.getElementById("spinner");
+
   data.forEach((e) => {
-    const div = document.createElement("div");
-
     spinner.classList.add("hidden");
-    div.innerHTML = `
-    
-            <div class="card bg-base-100 shadow-sm">
-              <figure class="px-4 pt-4">
-                <img
-                  src="${e.image}"
-                  alt="Shoes"
-                  class="h-full w-full object-cover rounded-xl"
-                />
-              </figure>
-              <div class="card-body p-4">
-                <h2 class="card-title">${e.pet_name}</h2>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-qrcode"></i> Breed: ${e.breed}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-regular fa-calendar"></i> Birth: ${e.date_of_birth}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-mercury"></i> Gender: ${e.gender}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-dollar-sign"></i> Price : € ${e.price}
-                </p>
-                <hr class="border-gray-300" />
-                <div class="card-actions mx-auto">
-                  <button onclick="myFunction(${e.petId})" class="btn   md:btn-md btn-outline  border-gray-200 text-gray-400">
-                    <i class="fa-regular fa-thumbs-up"></i>
-                  </button>
-                  <button
-                    class="btn  md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
-                  >
-                    Adopt
-                  </button>
-                  <button onclick="modalFunction(${e.petId})" 
-                    class="btn   md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
-                  >
-                    Details
-                  </button>
-                </div>
-              </div>
-            </div>
-            `;
-
+    const div = document.createElement("div");
+    div.innerHTML = buildCard(e);
     petCardsDetails.append(div);
   });
 };
+
+// Shared card HTML builder
+function buildCard(e) {
+  return `
+    <div class="card bg-base-100 shadow-sm">
+      <figure class="px-4 pt-4">
+        <img src="${e.image}" alt="${e.pet_name}" class="h-full w-full object-cover rounded-xl"/>
+      </figure>
+      <div class="card-body p-4">
+        <h2 class="card-title">${e.pet_name}</h2>
+        <p class="text-gray-500"><i class="fa-solid fa-qrcode"></i> Breed: ${e.breed}</p>
+        <p class="text-gray-500"><i class="fa-regular fa-calendar"></i> Birth: ${e.date_of_birth}</p>
+        <p class="text-gray-500"><i class="fa-solid fa-mercury"></i> Gender: ${e.gender}</p>
+        <p class="text-gray-500"><i class="fa-solid fa-dollar-sign"></i> Price : € ${e.price}</p>
+        <hr class="border-gray-300" />
+        <div class="card-actions mx-auto">
+          <button onclick="myFunction(${e.petId})" class="btn md:btn-md btn-outline border-gray-200 text-gray-400">
+            <i class="fa-regular fa-thumbs-up"></i>
+          </button>
+          <button id="${e.petId}" onclick="adoptedData(${e.petId})" class="btn md:btn-md btn-outline border-gray-200 text-[#0e7a81]">
+            Adopt
+          </button>
+          <button onclick="modalFunction(${e.petId})" class="btn md:btn-md btn-outline border-gray-200 text-[#0e7a81]">
+            Details
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// Sort by price (high to low)
+function sortByPrice() {
+  const sorted = [...currentPets].sort((a, b) => {
+    b.price - a.price;
+    // console.log(a, b);
+  });
+  console.log(...currentPets);
+
+  const petCardsDetails = document.getElementById("petCards");
+  petCardsDetails.innerHTML = "";
+
+  sorted.forEach((e) => {
+    const div = document.createElement("div");
+    div.innerHTML = buildCard(e);
+    petCardsDetails.append(div);
+  });
+}
+
 // Like image section
 function myFunction(e) {
   fetch(`https://openapi.programming-hero.com/api/peddy/pet/${e}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       const img = document.createElement("img");
       img.src = `${data.petData?.image}`;
       img.alt = "pets";
@@ -219,81 +164,70 @@ function myFunction(e) {
       imgs.append(img);
     });
 }
-// {
-//     "petId": 17,
-//     "breed": "Maine Coon",
-//     "category": "Cat",
-//     "date_of_birth": "2022-12-01",
-//     "price": 1200,
-//     "image": "https://i.ibb.co.com/85w4kSt/pet-17.jpg",
-//     "gender": "Male",
-//     "pet_details": "This majestic male Maine Coon, born on December 1, 2022, is known for his gentle demeanor and friendly personality. Fully vaccinated and priced at $1200, he's great with families and other pets.",
-//     "vaccinated_status": "Fully",
-//     "pet_name": "Thor"
-// }
+
 // Modal section
 function modalFunction(e) {
   const cardData = document.getElementById("cardData");
   cardData.innerHTML = "";
+
   fetch(`https://openapi.programming-hero.com/api/peddy/pet/${e}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data.petData);
-
-      const cardData = document.getElementById("cardData");
       const div = document.createElement("div");
-      div.innerHTML = "";
-      div.classList.add = "card bg-base-100 shadow-sm";
+      div.classList.add("card", "bg-base-100", "shadow-sm");
       div.innerHTML = `
-  <figure>
-          <img
-            class="h-full w-full object-cover rounded-xl"
-            src="${data.petData?.image}"
-            alt="Pet Data"
-          />
+        <figure>
+          <img class="h-full w-full object-cover rounded-xl" src="${data.petData?.image}" alt="Pet Data"/>
         </figure>
         <div class="card-body p-5">
           <h2 class="card-title">${data.petData?.pet_name}</h2>
           <div class="grid grid-cols-2">
             <div>
-              <p class="text-gray-500">
-                  <i class="fa-solid fa-qrcode"></i> Breed: ${data.petData?.breed}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-mercury"></i> Gender: ${data.petData?.gender}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-mercury"></i> Vaccinated status: ${data.petData?.vaccinated_status}
-                </p>
+              <p class="text-gray-500"><i class="fa-solid fa-qrcode"></i> Breed: ${data.petData?.breed}</p>
+              <p class="text-gray-500"><i class="fa-solid fa-mercury"></i> Gender: ${data.petData?.gender}</p>
+              <p class="text-gray-500"><i class="fa-solid fa-mercury"></i> Vaccinated status: ${data.petData?.vaccinated_status}</p>
             </div>
             <div>
-                <p class="text-gray-500">
-                  <i class="fa-regular fa-calendar"></i> Birth: ${data.petData?.date_of_birth}
-                </p>
-                <p class="text-gray-500">
-                  <i class="fa-solid fa-euro-sign"></i> Price : € ${data.petData?.price}
-                </p></div>
+              <p class="text-gray-500"><i class="fa-regular fa-calendar"></i> Birth: ${data.petData?.date_of_birth}</p>
+              <p class="text-gray-500"><i class="fa-solid fa-euro-sign"></i> Price : € ${data.petData?.price}</p>
+            </div>
           </div>
           <hr class="border-gray-300" />
           <h2 class="font-bold">Details Information</h2>
-          <p class="text-gray-500">
-            ${data.petData?.pet_details}
-          </p>
-          
+          <p class="text-gray-500">${data.petData?.pet_details}</p>
         </div>
-
-        <div class="">
+        <div>
           <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-            <button class="btn btn-block primary-color text-white">
-              Cancel
-            </button>
+            <button class="btn btn-block primary-color text-white">Cancel</button>
           </form>
-        </div>
-      `;
+        </div>`;
+
       cardData.append(div);
       document.getElementById("showModalData").click();
     });
 }
+
+// Adopted Data (countdown modal)
+function adoptedData(e) {
+  const modal = document.getElementById("countdown_modal");
+  const countEl = document.getElementById("count");
+  const adoptedBtn = document.getElementById(e);
+
+  let count = 3;
+  countEl.textContent = count;
+  modal.showModal();
+
+  const interval = setInterval(() => {
+    count--;
+    countEl.textContent = count;
+    if (count <= 0) {
+      clearInterval(interval);
+      modal.close();
+      adoptedBtn.classList.add("btn-disabled");
+      adoptedBtn.innerText = "Adopted";
+    }
+  }, 1000);
+}
+
 category();
 petsData();
