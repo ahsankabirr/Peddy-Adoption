@@ -46,6 +46,9 @@ const patsCategoryDetails = async (pat) => {
   );
   const data = await url.json();
 
+  const featureImg = document.getElementById("pat-img");
+  featureImg.innerHTML = "";
+
   const petCardsDetails = document.getElementById("petCards");
   const spinner = document.getElementById("spinner");
 
@@ -113,7 +116,7 @@ const patsCategoryDetails = async (pat) => {
                   >
                     Adopt
                   </button>
-                  <button
+                  <button onclick="modalFunction(${e.petId})"
                     class="btn   md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
                   >
                     Details
@@ -188,7 +191,7 @@ const petDetails = async (data) => {
                   >
                     Adopt
                   </button>
-                  <button
+                  <button onclick="modalFunction(${e.petId})" 
                     class="btn   md:btn-md   btn-outline border-gray-200 text-[#0e7a81]"
                   >
                     Details
@@ -214,6 +217,82 @@ function myFunction(e) {
 
       const imgs = document.getElementById("pat-img");
       imgs.append(img);
+    });
+}
+// {
+//     "petId": 17,
+//     "breed": "Maine Coon",
+//     "category": "Cat",
+//     "date_of_birth": "2022-12-01",
+//     "price": 1200,
+//     "image": "https://i.ibb.co.com/85w4kSt/pet-17.jpg",
+//     "gender": "Male",
+//     "pet_details": "This majestic male Maine Coon, born on December 1, 2022, is known for his gentle demeanor and friendly personality. Fully vaccinated and priced at $1200, he's great with families and other pets.",
+//     "vaccinated_status": "Fully",
+//     "pet_name": "Thor"
+// }
+// Modal section
+function modalFunction(e) {
+  const cardData = document.getElementById("cardData");
+  cardData.innerHTML = "";
+  fetch(`https://openapi.programming-hero.com/api/peddy/pet/${e}`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data.petData);
+
+      const cardData = document.getElementById("cardData");
+      const div = document.createElement("div");
+      div.innerHTML = "";
+      div.classList.add = "card bg-base-100 shadow-sm";
+      div.innerHTML = `
+  <figure>
+          <img
+            class="h-full w-full object-cover rounded-xl"
+            src="${data.petData?.image}"
+            alt="Pet Data"
+          />
+        </figure>
+        <div class="card-body p-5">
+          <h2 class="card-title">${data.petData?.pet_name}</h2>
+          <div class="grid grid-cols-2">
+            <div>
+              <p class="text-gray-500">
+                  <i class="fa-solid fa-qrcode"></i> Breed: ${data.petData?.breed}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-mercury"></i> Gender: ${data.petData?.gender}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-mercury"></i> Vaccinated status: ${data.petData?.vaccinated_status}
+                </p>
+            </div>
+            <div>
+                <p class="text-gray-500">
+                  <i class="fa-regular fa-calendar"></i> Birth: ${data.petData?.date_of_birth}
+                </p>
+                <p class="text-gray-500">
+                  <i class="fa-solid fa-euro-sign"></i> Price : € ${data.petData?.price}
+                </p></div>
+          </div>
+          <hr class="border-gray-300" />
+          <h2 class="font-bold">Details Information</h2>
+          <p class="text-gray-500">
+            ${data.petData?.pet_details}
+          </p>
+          
+        </div>
+
+        <div class="">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn btn-block primary-color text-white">
+              Cancel
+            </button>
+          </form>
+        </div>
+      `;
+      cardData.append(div);
+      document.getElementById("showModalData").click();
     });
 }
 category();
